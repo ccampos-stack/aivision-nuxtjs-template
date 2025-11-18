@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import AnimatedIcon from "/images/svgs/dark-astrisk.svg";
-import AnimatedIconPrimary from "/images/svgs/primary-astrisk.svg";
+
+// Usar rutas dinámicas para SVGs
+const { $config } = useNuxtApp()
+const baseURL = $config?.app?.baseURL || '/'
+
+const AnimatedIcon = `${baseURL}images/svgs/dark-astrisk.svg`
+const AnimatedIconPrimary = `${baseURL}images/svgs/primary-astrisk.svg`
+
 const menuOpen = ref(false); // Controls the v-menu open state
 interface Item {
   title: string;
@@ -14,11 +20,11 @@ const items: Item[] = [
     url: "/",
   },
   {
-    title: "About",
+    title: "Nosotros",
     url: "/about",
   },
   {
-    title: "Projects",
+    title: "Proyectos",
     url: "/projects",
   },
   {
@@ -26,13 +32,10 @@ const items: Item[] = [
     url: "/blog",
   },
   {
-    title: "Contact",
+    title: "Contacto",
     url: "/contact",
   },
-   {
-    title: "Error",
-    url: "/error",
-  },
+
 ];
 </script>
 
@@ -109,15 +112,11 @@ const items: Item[] = [
         </v-col>
       </v-row>
       <div class="d-flex flex-column pt-6">
+    
         <a
-          href="tel:+1-212-456-7890"
-          class="text-dark text-decoration-none opacity-50 hover-opacity-100 text-subtitle-2"
-          >+1-212-456-7890</a
-        >
-        <a
-          href="mailto:info@wrappixel.com"
+          href="mailto:contacto@aivision.cl"
           class="text-dark text-decoration-none text-h4"
-          >info@wrappixel.com</a
+          >contacto@aivision.cl</a
         >
       </div>
     </v-sheet>

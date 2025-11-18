@@ -26,6 +26,9 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "AIVision Nuxtjs Template",
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/AIVISION/favicon.ico' }
+      ]
     },
     baseURL: '/AIVISION/',
     cdnURL: '/AIVISION/'

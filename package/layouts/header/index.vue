@@ -12,8 +12,8 @@ const handleScroll = () => {
 
 const logoSrc = computed(() =>
   isScrolled.value
-    ? "/images/logos/DarkLogo.png"
-    : "/images/logos/WhiteLogo.png"
+    ? "/AIVISION/images/logos/DarkLogo.png"
+    : "/AIVISION/images/logos/WhiteLogo.png"
 );
 
 const LIGHT = "LIGHT_THEME";
