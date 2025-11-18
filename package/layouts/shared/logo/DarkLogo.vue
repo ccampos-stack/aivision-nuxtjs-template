@@ -1,6 +1,8 @@
 
 <script setup lang="ts">
-import darkPrimaryLogo from '/images/logos/DarkLogo2.png';
+// Usar runtime config para obtener baseURL correcto
+const config = useRuntimeConfig();
+const darkPrimaryLogo = `${config.app.baseURL}images/logos/DarkLogo2.png`.replace('//', '/');
 </script>
 <template>
     <div class="logo lh-normal">

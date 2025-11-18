@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import LightLogo from '/images/logos/WhiteLogo.png';
+// Usar runtime config para obtener baseURL correcto
+const config = useRuntimeConfig();
+const LightLogo = `${config.app.baseURL}images/logos/WhiteLogo.png`.replace('//', '/');
 </script>
 <template>
     <div class="logo lh-normal">
