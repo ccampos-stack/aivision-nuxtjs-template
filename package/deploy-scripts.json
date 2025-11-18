@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "deploy:static": "npm run generate && echo 'Static build ready in .output/public/'",
+    "deploy:server": "npm run build && echo 'Server build ready in .output/server/'",
+    "deploy:preview": "npm run generate && npx serve .output/public",
+    "deploy:docker": "docker build -t aivision-nuxtjs . && docker run -p 3000:3000 aivision-nuxtjs",
+    "start:prod": "node .output/server/index.mjs",
+    "start:pm2": "pm2 start ecosystem.config.js",
+    "logs": "pm2 logs aivision-nuxtjs"
+  }
+}
