@@ -1,13 +1,12 @@
 
 <script setup lang="ts">
-// Usar runtime config para obtener baseURL correcto
-const config = useRuntimeConfig();
-const darkPrimaryLogo = `${config.app.baseURL}images/logos/DarkLogo2.png`.replace('//', '/');
+// Solución directa para subdirectorio AIVISION
+const logoSrc = '/AIVISION/images/logos/DarkLogo2.png';
 </script>
 <template>
     <div class="logo lh-normal">
         <NuxtLink to="/">
-            <img :src="darkPrimaryLogo" alt="home" class="logo-img" />
+            <img :src="logoSrc" alt="home" class="logo-img" />
         </NuxtLink>
     </div>
 </template>
