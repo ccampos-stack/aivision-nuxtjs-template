@@ -27,7 +27,8 @@ export default defineNuxtConfig({
     head: {
       title: "AIVision Nuxtjs Template",
     },
-    baseURL: '/'
+    baseURL: '/AIVISION/',
+    cdnURL: '/AIVISION/'
   },
 
   // Vuetify build configuration
