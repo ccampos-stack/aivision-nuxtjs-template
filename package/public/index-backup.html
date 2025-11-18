@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AIVision - Innovación Industrial</title>
+    <meta name="description" content="AIVision - Impulsamos la innovación industrial, convirtiendo procesos complejos en ecosistemas digitales inteligentes y eficientes">
+    <link rel="icon" href="/favicon.ico">
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/_nuxt/entry.C8vMC4dv.css" as="style" crossorigin>
+    <link rel="stylesheet" href="/_nuxt/entry.C8vMC4dv.css" crossorigin>
+    <style>
+        /* Loading screen */
+        .nuxt-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1f2a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .loading-text {
+            color: #AD05EB;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="__nuxt">
+        <div class="nuxt-loading">
+            <div class="loading-text">AIVision Cargando...</div>
+        </div>
+    </div>
+    <div id="teleports"></div>
+    
+    <script>
+        // Configuración global de Nuxt
+        window.__NUXT__ = {
+            config: {
+                public: {},
+                app: {
+                    baseURL: "/",
+                    buildAssetsDir: "/_nuxt/",
+                    cdnURL: ""
+                }
+            }
+        };
+    </script>
+    
+    <script type="module" src="/_nuxt/RAUpIr0_.js" crossorigin></script>
+    
+    <script>
+        // Ocultar loading cuando la app esté lista
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const loading = document.querySelector('.nuxt-loading');
+                if (loading) loading.style.display = 'none';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

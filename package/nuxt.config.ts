@@ -9,12 +9,26 @@ const { resolve } = createResolver(import.meta.url);
 export default defineNuxtConfig({
   
   ssr: false,
+  
+  // Configuración para deployment estático
+  nitro: {
+    prerender: {
+      routes: ['/']
+    },
+    serveStatic: true
+  },
 
   typescript: {
     shim: false,
   },
   
-  
+  // Configuración de app para producción
+  app: {
+    head: {
+      title: "AIVision Nuxtjs Template",
+    },
+    baseURL: '/'
+  },
 
   // Vuetify build configuration
   build: {
@@ -22,16 +36,6 @@ export default defineNuxtConfig({
   },
 
   modules: ["@pinia/nuxt"],
-
-  app: {
-    head: {
-      title: "AIVision Nuxtjs Template",
-    },
-  },
-
-  nitro: {
-    serveStatic: true,
-  },
 
   devServerHandlers: [],
   compatibilityDate: '2025-05-15',
