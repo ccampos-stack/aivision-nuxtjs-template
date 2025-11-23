@@ -17,34 +17,17 @@ const FooterLinks = ref([
     title: "Proyectos",
     url: "/projects",
   },
-  {
-    title: "Términos",
-    url: "/terms-conditions",
-  },
-  {
-    title: "Política de Privacidad",
-    url: "/privacy-policy",
-  },
-  {
-    title: "Error 404",
-    url: "/error",
-  },
 ]);
 
 const SocialLinks = ref([
   {
-    title: "Facebook",
-    url: "https://www.facebook.com/",
+    title: "LinkedIn",
+    url: "https://cl.linkedin.com/company/cyd-group-chile",
   },
   {
     title: "Instagram",
-    url: "https://www.instagram.com/",
+    url: "https://www.instagram.com/cydgroup_chile/?igsh=MXM1czlyOTE2Y21yMw%3D%3D&utm_source=qr#",
   },
-  {
-    title: "Twitter",
-    url: "https://x.com/",
-  },
-  
 ]);
 </script>
 <template>
@@ -58,8 +41,7 @@ const SocialLinks = ref([
             <div>
               <div class="d-flex flex-column ga-2">
                 <NuxtLink
-                  href="https://www.wrappixel.com/"
-                  target="_blank"
+                  href="mailto:contacto@aivision.cl"
                   class="d-flex ga-3 align-center text-white text-decoration-none hover-primary-link"
                 >
                   <Icon
@@ -67,10 +49,10 @@ const SocialLinks = ref([
                     height="24"
                     class="text-primary"
                   />
-                  info@wrappixel.com</NuxtLink
+                  contacto@aivision.cl</NuxtLink
                 >
                 <NuxtLink
-                  href="https://maps.app.goo.gl/hpDp81fqzGt5y4bC8"
+                  href="https://maps.app.goo.gl/"
                   target="_blank"
                   class="d-flex ga-3 align-center text-white text-decoration-none hover-primary-link"
                 >
@@ -78,7 +60,7 @@ const SocialLinks = ref([
                     icon="uil:map-marker"
                     height="24"
                     class="text-primary"
-                  />Zwolle Netherlands</NuxtLink
+                  />Valparaíso, Chile</NuxtLink
                 >
               </div>
             </div>

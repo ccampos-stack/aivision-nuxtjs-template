@@ -20,18 +20,17 @@ import ManImage from "/images/background/aboutus-banner.png";
               class="icon-rotate"
             />
             <p class="text-white text-subtitle-1 mb-0">
-              <span class="opacity-70">We craft</span>
-              <span class="text-primary opacity-100"> innovative digital </span>
+              <span class="opacity-70">Transformando la inspección</span>
+              <span class="text-primary opacity-100"> Naval e Industrial </span>
               <span class="opacity-70"
-                >designs that amplify brand identity and drive meaningful
-                results</span
+                >con Gemelos Digitales y Visión por Computadora.</span
               >
             </p>
           </div>
         </div>
         <!-- Bottom row: title + badge -->
         <div class="d-flex flex-md-row flex-column ga-5 align-md-end align-start mt-md-6 mt-3">
-          <h1 class="text-white text-h1 font-weight-bold mb-0">About us</h1>
+          <h1 class="text-white text-h1 font-weight-bold mb-0">Quiénes Somos</h1>
           <SharedBigBadge />
         </div>
       </div>

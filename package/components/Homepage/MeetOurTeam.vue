@@ -5,37 +5,45 @@ import img1 from "/images/team/team-img-1.png";
 import img2 from "/images/team/team-img-2.png";
 import img3 from "/images/team/team-img-3.png";
 import img4 from "/images/team/team-img-4.png";
+import img5 from "/images/team/team-img-5.png";
+import img6 from "/images/team/team-img-6.png";
 
 const items = [
   {
     name: "Alejandro Campos",
     role: "Naval Construction Engineer / New Business Manager",
     image: img1,
+    linkedin: "https://www.linkedin.com/in/alejandro-campos-80296957/",
   },
   {
     name: "Gonzalo Campos",
     role: "NACE Professional / Technical Sales Manager",
     image: img2,
+    linkedin: "https://www.linkedin.com/in/gonzalo-campos-b8a165100/",
   },
   {
     name: "Cristian Campos",
     role: "IT Specialist / Business Manager",
     image: img3,
-  },
-  {
-    name: "Gianfranco Sáez",
-    role: "Drone & 3D Modeling Specialist",
-    image: img4,
-  },
-  {
-    name: "Karl Graf",
-    role: "Project Management & Sustainability Engineer",
-    image: img1,
+    linkedin: "https://www.linkedin.com/in/cristian-campos-70a83a169/",
   },
   {
     name: "Tamara Campos",
     role: "Marketing Manager",
-    image: img2,
+    image: img4,
+    linkedin: "https://www.linkedin.com/in/tamara-campos-901595346/",
+  },
+  {
+    name: "Karl Graf",
+    role: "Project Management & Sustainability Engineer",
+    image: img5,
+    linkedin: "https://www.linkedin.com/in/karlgrafsalas/",
+  },
+  {
+    name: "Gianfranco Sáez",
+    role: "Drone & 3D Modeling Specialist",
+    image: img6,
+    linkedin: "",
   },
 ];
 </script>
@@ -69,29 +77,18 @@ const items = [
             height="470"
           />
           <div
+            v-if="item.linkedin"
             class="team-social d-flex ga-3 position-absolute "
           >
-            <v-avatar size="44" class="social-icon cursor-pointer">
-              <Icon
-                icon="garden:twitter-stroke-12"
-                height="18"
-                class="text-secondary"
-              />
-            </v-avatar>
-            <v-avatar size="44" class="social-icon cursor-pointer">
-              <Icon
-                icon="simple-icons:behance"
-                height="18"
-                class="text-secondary"
-              />
-            </v-avatar>
-            <v-avatar size="44" class="social-icon cursor-pointer">
-              <Icon
-                icon="entypo-social:linkedin"
-                height="18"
-                class="text-secondary"
-              />
-            </v-avatar>
+            <NuxtLink :href="item.linkedin" target="_blank">
+              <v-avatar size="44" class="social-icon cursor-pointer">
+                <Icon
+                  icon="entypo-social:linkedin"
+                  height="18"
+                  class="text-secondary"
+                />
+              </v-avatar>
+            </NuxtLink>
           </div>
           <div class="teambox"></div>
         </div>

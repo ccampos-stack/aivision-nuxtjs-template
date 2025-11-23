@@ -95,60 +95,19 @@ const decrement = (index: number) => {
       <v-col cols="12" lg="8">
         <div class="d-flex flex-column ga-lg-10 ga-8">
           <p class="text-subtitle-1">
-            It’s a canvas for your creativity. It’s your opportunity to
-            transform bold ideas into dynamic, interactive experiences. Your
-            work can shape identities, tell compelling stories, or spark
-            meaningful change. As the digital landscape grows, so do the
-            possibilities. And whether you thrive working remotely or in a
-            buzzing agency space, the thrill of seeing your vision come to life
-            is unmatched.
+            <strong>AI Vision</strong> nace como una evolución natural de <strong>Comercial C&D Group Limitada</strong>, una empresa fundada en Chile por el entusiasmo de dos hermanos y su padre, quien aportó una vasta experiencia en la comercialización de soluciones de alta performance en las áreas <strong>Naval e Industrial</strong> en América del Sur.
           </p>
           <p class="text-subtitle-1">
-            At AIVision, we bring ideas to life through a range of services:
-            branding, web development, agency solutions, content creation, SaaS,
-            and motion & 3D modeling. As a web designer, you merge artistry and
-            technology to craft "digital experiences" that inform, captivate,
-            and inspire. Every day brings something new — one moment you’re
-            sketching innovative concepts, the next you’re turning them into
-            seamless, responsive designs. Web design keeps you pushing
-            boundaries and creating at every turn!
+            Nuestra trayectoria se forjó en la búsqueda de <strong>soluciones técnicas de vanguardia</strong>, impulsando siempre la productividad y el cumplimiento normativo. En 2024-2025, dimos un paso estratégico para incorporar <strong>inspecciones marítimas e industriales</strong> y asesorías especializadas, evolucionando nuestro enfoque de productos a <strong>soluciones integrales</strong>.
+          </p>
+          <p class="text-subtitle-1">
+            Esta expertiz técnica e industrial nos permitió dar el salto a <strong>AI Vision</strong>. Hoy, integramos esa solidez demostrable con la vanguardia tecnológica, incorporando nuevos especialistas para complementar nuestra experiencia con el expertise de la industria. Nuestra misión es clara: utilizar la <strong>Inteligencia Artificial, Gemelos Digitales, Drones Lidar</strong> y <strong>Modelado 3D</strong> para impulsar la <strong>seguridad, la precisión y la eficiencia operativa</strong> en los activos críticos de nuestros clientes.
           </p>
         </div>
       </v-col>
     </v-row>
 
-    <!-- Counter Blocks -->
-    <SharedSectionSpacer />
-    <div class="counter">
-      <v-row>
-        <v-col
-          v-for="(item, index) in counters"
-          :key="index"
-          cols="12"
-          md="4"
-          class="px-8"
-        >
-          <h2 class="text-60 font-weight-bold lh-in text-dark">
-            {{ item.prefix || "" }}{{ item.animatedValue
-            }}{{ item.suffix || "" }}
-          </h2>
 
-          <v-divider class="mb-6 mt-4 opacity-10"></v-divider>
-
-          <h4 class="text-h4 font-weight-bold mb-3 text-dark">
-            {{ item.title }}
-          </h4>
-
-          <div
-            class="text-subtitle-2 text-dark opacity-70 font-weight-regular mb-4"
-          >
-            {{ item.description }}
-          </div>
-
-         
-        </v-col>
-      </v-row>
-    </div>
   </div>
   <SharedSectionSpacer />
   </div>

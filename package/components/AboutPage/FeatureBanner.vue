@@ -3,88 +3,76 @@ import { Icon } from "@iconify/vue";
 import Bg from "/images/background/feature-img.jpg";
 const items = [
   {
-    title: "Branding",
+    title: "Analítica Industrial",
   },
   {
-    title: "Web development",
+    title: "Gemelos Digitales",
   },
   {
-    title: "Agency",
+    title: "AI Vision",
   },
   {
-    title: "Content creation",
+    title: "Inspección con Drones",
   },
   {
-    title: "SaaS",
+    title: "Visión por Computadora",
   },
   {
-    title: "Motion & 3d modeling",
+    title: "Tours Virtuales VR",
   },
   {
-    title: "Photography",
+    title: "Fotogrametría 3D",
   },
   {
-    title: "Branding",
+    title: "Mantenimiento Predictivo",
   },
   {
-    title: "Web development",
+    title: "Tecnología Lidar",
   },
   {
-    title: "Agency",
+    title: "Seguridad Operacional",
   },
   {
-    title: "Content creation",
+    title: "Asset Management",
   },
   {
-    title: "SaaS",
+    title: "Inteligencia Artificial",
   },
   {
-    title: "Motion & 3d modeling",
+    title: "Analítica Industrial",
   },
   {
-    title: "Photography",
+    title: "Gemelos Digitales",
   },
   {
-    title: "Branding",
+    title: "AI Vision",
   },
   {
-    title: "Web development",
+    title: "Inspección con Drones",
   },
   {
-    title: "Agency",
+    title: "Visión por Computadora",
   },
   {
-    title: "Content creation",
+    title: "Tours Virtuales VR",
   },
   {
-    title: "SaaS",
+    title: "Fotogrametría 3D",
   },
   {
-    title: "Motion & 3d modeling",
+    title: "Mantenimiento Predictivo",
   },
   {
-    title: "Photography",
+    title: "Tecnología Lidar",
   },
   {
-    title: "Branding",
+    title: "Seguridad Operacional",
   },
   {
-    title: "Web development",
+    title: "Asset Management",
   },
   {
-    title: "Agency",
-  },
-  {
-    title: "Content creation",
-  },
-  {
-    title: "SaaS",
-  },
-  {
-    title: "Motion & 3d modeling",
-  },
-  {
-    title: "Photography",
+    title: "Inteligencia Artificial",
   },
 ];
 </script>
