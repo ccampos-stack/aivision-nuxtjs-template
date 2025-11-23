@@ -14,17 +14,17 @@ const items = ref<CounterItem[]>([
   {
     value: 40000,
     suffix: "K",
-    caption: "People who have launched their websites",
+    caption: "Proyectos de IA Industrial Implementados",
   },
   {
     value: 238,
     suffix: "",
-    caption: "Experienced professionals ready to assist",
+    caption: "Horas de Operación Optimizadas con IA",
   },
   {
     value: 3000000,
     suffix: "M",
-    caption: "Support through messages and live consultations",
+    caption: "Precisión en Detección de Fallos Críticos",
   },
 ]);
 
@@ -76,35 +76,18 @@ function formatNumber(value: number, suffix: string) {
     <div class="container-lg">
       <v-row>
         <v-col cols="12" lg="4">
-          <SharedLeftSideDarkHeading number="01" title="Stats & facts" />
+          <SharedLeftSideDarkHeading number="01" title="Quiénes Somos" />
         </v-col>
         <v-col cols="12" lg="8">
           <div class="d-flex flex-column ga-11">
             <SharedCommonHeading
               class="mw-md-575"
-              title="High quality web design solutions you can trust."
-              subtitle="When selecting a web design agency, it's essential to consider its reputation, experience, and the specific needs of your project."
+              title="La Nueva Era de la Inspección Naval e Industrial: Gemelos Digitales e IA."
+              subtitle="Somos AI Vision: Un equipo multidisciplinario de expertos con vasta experiencia demostrable en el sector naval e industrial. Para implementar soluciones de alto impacto, utilizamos herramientas de última generación como: Drones, tecnología Lidar para escaneo 3D, software de procesamiento para fotogrametría, herramientas de medición de precisión y Gemelos Digitales, permitiendo el procesamiento de Master Plan y Tours Virtuales industriales."
             />
 
-            <div class="d-flex flex-sm-row flex-column ga-8">
-              <div
-                class="d-flex flex-column ga-3 flex-grow-1 border-t "
-                v-for="(item, index) in items"
-                :key="index"
-              >
-                <h3 class="text-60 text-dark pt-6">
-                  {{ formatNumber(animatedValues[index], item.suffix) }}+
-                </h3>
-                <p
-                  class="text-subtitle-2 text-dark opacity-70 font-weight-regular"
-                >
-                  {{ item.caption }}
-                </p>
-              </div>
-            </div>
-
             <v-btn class="interactive-button" to="/about" size="lg" flat>
-              <span class="label">Who we are</span>
+              <span class="label">Conoce a AI Vision</span>
               <v-avatar size="45" class="icon bg-white">
                 <Icon icon="material-symbols:arrow-outward" height="20" />
               </v-avatar>

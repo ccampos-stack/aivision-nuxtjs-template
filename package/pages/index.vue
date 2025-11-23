@@ -4,10 +4,10 @@
   <HomepagePortfolio />
   <HomepageWhatweDo />
   <HomepageWhyChoose />
-  <HomepageStoriesFromClient />
+  <!-- <HomepageStoriesFromClient /> -->
   <HomepageMeetOurTeam/>
-  <HomepagePricing/>
-  <HomepageFAQ/>
+  <!-- <HomepagePricing/> -->
+  <!-- <HomepageFAQ/> -->
   <HomepageRecentNews/>
   <HomepageGetinTouch/>
 </template>

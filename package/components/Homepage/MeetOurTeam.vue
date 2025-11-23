@@ -8,24 +8,34 @@ import img4 from "/images/team/team-img-4.png";
 
 const items = [
   {
-    name: "Martha Finley",
-    role: "Creative Director",
+    name: "Alejandro Campos",
+    role: "Naval Construction Engineer / New Business Manager",
     image: img1,
   },
   {
-    name: "Floyd Miles",
-    role: "Marketing Strategist",
+    name: "Gonzalo Campos",
+    role: "NACE Professional / Technical Sales Manager",
     image: img2,
   },
   {
-    name: "Glenna Snyder",
-    role: "Lead Designer",
+    name: "Cristian Campos",
+    role: "IT Specialist / Business Manager",
     image: img3,
   },
   {
-    name: "Albert Flores",
-    role: "UX/UI Developer",
+    name: "Gianfranco Sáez",
+    role: "Drone & 3D Modeling Specialist",
     image: img4,
+  },
+  {
+    name: "Karl Graf",
+    role: "Project Management & Sustainability Engineer",
+    image: img1,
+  },
+  {
+    name: "Tamara Campos",
+    role: "Marketing Manager",
+    image: img2,
   },
 ];
 </script>
@@ -36,14 +46,14 @@ const items = [
   <div class="container-lg">
     <v-row>
       <v-col cols="12" lg="4">
-        <SharedLeftSideDarkHeading number="06" title="The team" />
+        <SharedLeftSideDarkHeading number="06" title="Equipo Multidisciplinario" />
       </v-col>
       <v-col cols="12" lg="8">
         <div class="d-flex flex-column ga-11">
           <SharedCommonHeading
             class="mw-670"
-            title="Meet our team"
-            subtitle="Our team is committed to redefining digital experiences through innovative web solutions while fostering a diverse and collaborative environment."
+            title="Conoce a Nuestro Equipo Experto"
+            subtitle="Nuestro equipo combina una amplia experiencia en Inspección Marítima e Industrial con innovación tecnológica en Drones, Fotogrametría e IT, garantizando soluciones integrales y precisas para el sector."
           />
         </div>
       </v-col>

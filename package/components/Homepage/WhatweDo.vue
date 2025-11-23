@@ -9,30 +9,30 @@ import img4 from "/images/projects/whatwedo.jpg";
 // Add offset per item for vertical image movement (90px each step)
 const items = [
   {
-    title: "Brand identity",
+    title: "Inspección Industrial con IA",
     description:
-      "When selecting a web design agency, it's essential to consider its reputation, experience, and the specific needs of your project.",
+      "Fusionamos la experiencia técnica con la IA de vanguardia para ofrecer plataformas integrales que garantizan la seguridad, optimizan la gestión y reducen costos en activos críticos.",
     image: img1,
     offset: -50,
   },
   {
-    title: "Web development",
+    title: "Gemelos Digitales y Modelado 3D",
     description:
-      "When selecting a web design agency, it's essential to consider its reputation, experience, and the specific needs of your project.",
+      "Fusionamos la experiencia técnica con la IA de vanguardia para ofrecer plataformas integrales que garantizan la seguridad, optimizan la gestión y reducen costos en activos críticos.",
     image: img2,
     offset: 80,
   },
   {
-    title: "Content creation",
+    title: "Mantenimiento Predictivo (Machine Learning)",
     description:
-      "When selecting a web design agency, it's essential to consider its reputation, experience, and the specific needs of your project.",
+      "Fusionamos la experiencia técnica con la IA de vanguardia para ofrecer plataformas integrales que garantizan la seguridad, optimizan la gestión y reducen costos en activos críticos.",
     image: img3,
     offset: 200,
   },
   {
-    title: "Motion & 3d modeling",
+    title: "Tours Virtuales y Capacitación VR",
     description:
-      "When selecting a web design agency, it's essential to consider its reputation, experience, and the specific needs of your project.",
+      "Fusionamos la experiencia técnica con la IA de vanguardia para ofrecer plataformas integrales que garantizan la seguridad, optimizan la gestión y reducen costos en activos críticos.",
     image: img4,
     offset: 350,
   },
@@ -49,7 +49,7 @@ const activeItem = ref(items[0]);
       <v-row>
         <!-- LEFT SIDE IMAGE -->
         <v-col cols="12" lg="4" class="position-relative">
-          <SharedLeftSideLightHeading number="03" title="Services" />
+          <SharedLeftSideLightHeading number="03" title="Nuestros Servicios" />
         </v-col>
 
         <!-- RIGHT SIDE TEXT LIST -->
@@ -57,8 +57,8 @@ const activeItem = ref(items[0]);
           <div class="d-flex flex-column ga-11">
             <SharedCommonHeadingWhite
               class="mw-670"
-              title="What we do"
-              subtitle="A glimpse into our creativity—exploring innovative designs, successful collaborations, and transformative digital experiences."
+              title="Soluciones Tecnológicas para la Industria"
+              subtitle="Fusionamos la experiencia técnica con la IA de vanguardia para ofrecer plataformas integrales que garantizan la seguridad, optimizan la gestión y reducen costos en activos críticos."
             />
           </div>
         </v-col>
@@ -115,7 +115,7 @@ const activeItem = ref(items[0]);
           </div>
           <div class="mt-lg-12 mt-8">
           <v-btn class="interactive-button" to="" size="lg" flat>
-            <span class="label">See Our Work</span>
+            <span class="label">Ver Detalle de Soluciones</span>
             <v-avatar size="45" class="icon bg-white">
               <Icon icon="material-symbols:arrow-outward" class="text-secondary" height="20" />
             </v-avatar>

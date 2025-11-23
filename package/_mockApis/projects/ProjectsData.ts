@@ -39,10 +39,10 @@ const chance = new Chance();
 const ProjectGridData: ProjectsTypes[] = [
   {
     id: chance.integer({ min: 1, max: 2000 }),
-    project_title: "Snapclear",
+    project_title: "Digital Twin (Gemelo Digital)",
     project_image: project1,
-    tag1: "UX Strategy",
-    tag2: "UI Design",
+    tag1: "Modelado 3D",
+    tag2: "Inspección Estructural",
     industry: "Technology",
     raised: "1.1M",
     description:
@@ -53,10 +53,10 @@ const ProjectGridData: ProjectsTypes[] = [
   },
   {
     id: chance.integer({ min: 1, max: 2000 }),
-    project_title: "Pixelforge",
+    project_title: "Predictive Insight (Análisis Predictivo)",
     project_image: project2,
-    tag1: "UI/UX design",
-    tag2: "Web development",
+    tag1: "Machine Learning",
+    tag2: "Mantenimiento 4.0",
     industry: "Shoes",
     raised: "1.2M",
     description:
@@ -67,10 +67,10 @@ const ProjectGridData: ProjectsTypes[] = [
   },
   {
     id: chance.integer({ min: 1, max: 2000 }),
-    project_title: "Transfermax",
+    project_title: "Inmersión VR Industrial",
     project_image: project3,
-    tag1: "Web development",
-    tag2: "Digital design",
+    tag1: "Realidad Virtual",
+    tag2: "Capacitación Segura",
     industry: "Perfume",
     raised: "1.1M",
     description:
@@ -81,10 +81,10 @@ const ProjectGridData: ProjectsTypes[] = [
   },
   {
     id: chance.integer({ min: 1, max: 2000 }),
-    project_title: "Digital Magazine",
+    project_title: "Monitoreo Aéreo Automatizado",
     project_image: project4,
-    tag1: "Digital design",
-    tag2: "Web development",
+    tag1: "Drones Lidar",
+    tag2: "Fotogrametría de Precisión",
     industry: "Magazine",
     raised: "1.5M",
     description:

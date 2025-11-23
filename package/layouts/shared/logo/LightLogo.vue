@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// Solución directa para subdirectorio AIVISION
-const logoSrc = '/AIVISION/images/logos/WhiteLogo.png';
+// Ruta para dominio raíz www.aivision.cl
+const logoSrc = '/images/logos/WhiteLogo.png';
 </script>
 <template>
     <div class="logo lh-normal">

@@ -2,11 +2,11 @@
 import { Icon } from "@iconify/vue";
 const FooterLinks = ref([
   {
-    title: "Home",
+    title: "Inicio",
     url: "/",
   },
   {
-    title: "About",
+    title: "Nosotros",
     url: "/about",
   },
   {
@@ -14,15 +14,15 @@ const FooterLinks = ref([
     url: "/blog",
   },
   {
-    title: "Work",
+    title: "Proyectos",
     url: "/projects",
   },
   {
-    title: "Terms",
+    title: "Términos",
     url: "/terms-conditions",
   },
   {
-    title: "Privacy Policy",
+    title: "Política de Privacidad",
     url: "/privacy-policy",
   },
   {
@@ -54,7 +54,7 @@ const SocialLinks = ref([
       <v-row>
         <v-col cols="12" lg="5">
           <div class="d-flex flex-column ga-10">
-            <h2 class="text-h2 pe-lg-16">Build something together?</h2>
+            <h2 class="text-h2 pe-lg-16">¿Construyamos algo juntos?</h2>
             <div>
               <div class="d-flex flex-column ga-2">
                 <NuxtLink
