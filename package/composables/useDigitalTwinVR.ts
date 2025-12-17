@@ -8,6 +8,8 @@ export const useDigitalTwinVR = () => {
   let controllerModelFactory: XRControllerModelFactory
   let vrModel: THREE.Object3D | null = null // Referencia al modelo para manipulación
   let session: XRSession | null = null
+  let measureCallback: ((point: THREE.Vector3) => void) | null = null // Callback para medición
+  let raycaster = new THREE.Raycaster()
 
   /**
    * Configurar renderer para VR
@@ -163,13 +165,38 @@ export const useDigitalTwinVR = () => {
   const onSelectStart = (event: any) => {
     const controller = event.target
     controller.userData.isSelecting = true
-    console.log('Controller select start')
+    
+    // Si hay un callback de medición activo, hacer raycast
+    if (measureCallback && vrModel) {
+      // Configurar raycaster desde el controlador
+      const tempMatrix = new THREE.Matrix4()
+      tempMatrix.identity().extractRotation(controller.matrixWorld)
+      
+      raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld)
+      raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix)
+      
+      // Raycast contra el modelo
+      const intersects = raycaster.intersectObject(vrModel, true)
+      
+      if (intersects.length > 0) {
+        const point = intersects[0].point.clone()
+        console.log('VR Measurement point:', point)
+        measureCallback(point)
+      }
+    }
   }
 
   const onSelectEnd = (event: any) => {
     const controller = event.target
     controller.userData.isSelecting = false
-    console.log('Controller select end')
+  }
+
+  /**
+   * Configurar callback para medición en VR
+   */
+  const setMeasureCallback = (callback: ((point: THREE.Vector3) => void) | null) => {
+    measureCallback = callback
+    console.log('VR Measure callback:', callback ? 'activado' : 'desactivado')
   }
 
   /**
@@ -312,6 +339,7 @@ export const useDigitalTwinVR = () => {
     setupVREnvironment,
     optimizeLightingForVR,
     updateVRControls,
+    setMeasureCallback,
     cleanupVR
   }
 }

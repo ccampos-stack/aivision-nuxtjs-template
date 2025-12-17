@@ -20,6 +20,7 @@ const {
   setupVREnvironment,
   optimizeLightingForVR,
   updateVRControls,
+  setMeasureCallback,
   cleanupVR
 } = useDigitalTwinVR();
 
@@ -413,6 +414,10 @@ const clearMeasurements = () => {
     measureLabel.remove();
     measureLabel = null;
   }
+  
+  // Desactivar callback VR
+  setMeasureCallback(null);
+  measuring.value = false;
 };
 
 const clearArea = () => {
@@ -507,13 +512,12 @@ const enterVRMode = async (usePassthrough: boolean) => {
       await startXRSessionWithPassthrough(renderer, scene);
     } else {
       console.log('🥽 Iniciando VR Inmersiva...');
-      // Configurar fondo oscuro para VR inmersiva
-      scene.background = new THREE.Color(0x333333);
-      await startXRSession(renderer);
+      await startXRSession(renderer, scene);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error iniciando modo VR:', error);
-    errorMessage.value = 'No se pudo iniciar el modo VR. Verifica que tu dispositivo soporte WebXR.';
+    console.error('Error completo:', error.message, error.stack);
+    errorMessage.value = `Error VR: ${error.message || 'Verifica que tu dispositivo soporte WebXR'}`;
   }
 };
 
@@ -535,9 +539,12 @@ const onVRSessionStart = () => {
 const onVRSessionEnd = () => {
   console.log('👁️ Sesión VR finalizada');
   isInVR.value = false; // Actualizar estado de VR
+  passthroughEnabled.value = false; // Resetear passthrough
   
   // Restaurar estado original
   restoreModelState();
+  
+  console.log('✓ Estados reseteados - isInVR:', isInVR.value, 'passthrough:', passthroughEnabled.value);
 };
 
 const loadModel = async () => {
@@ -777,6 +784,13 @@ const toggleMeasure = () => {
     clearMeasurements();
     areaMode.value = false;
     clearArea();
+    // Activar medición en VR
+    setMeasureCallback(addMeasurePoint);
+    console.log('✓ Modo medición activado (incluye VR)');
+  } else {
+    // Desactivar medición en VR
+    setMeasureCallback(null);
+    console.log('✓ Modo medición desactivado');
   }
 };
 
@@ -840,7 +854,7 @@ onUnmounted(() => {
             <div class="control-group">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <label class="text-subtitle-2 text-dark">Model ID</label>
-                <span style="font-size: 10px; color: #888; font-weight: 600;">v1.4.6-VR</span>
+                <span style="font-size: 10px; color: #888; font-weight: 600;">v1.5.4-VR</span>
               </div>
               <input
                 v-model.number="modelId"

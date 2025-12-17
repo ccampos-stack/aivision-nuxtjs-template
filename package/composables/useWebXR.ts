@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import * as THREE from 'three'
 
 export const useWebXR = () => {
   const isXRSupported = ref(false)
@@ -29,7 +30,7 @@ export const useWebXR = () => {
   /**
    * Iniciar sesión XR inmersiva (VR completa)
    */
-  const startXRSession = async (renderer: any) => {
+  const startXRSession = async (renderer: any, scene: any) => {
     if (!isXRSupported.value) {
       throw new Error('WebXR no soportado en este dispositivo')
     }
@@ -44,15 +45,16 @@ export const useWebXR = () => {
       isInVR.value = true
       passthroughEnabled.value = false
 
+      // IMPORTANTE: Configurar fondo oscuro para VR inmersiva
+      scene.background = new THREE.Color(0x333333)
+      console.log('✓ Fondo VR inmersivo configurado (gris oscuro)')
+
       // Configurar renderer para VR
       await renderer.xr.setSession(session)
 
-      // Manejar fin de sesión
+      // Limpiar xrSession cuando termine (el estado isInVR se maneja en el viewer)
       session.addEventListener('end', () => {
         xrSession.value = null
-        isInVR.value = false
-        passthroughEnabled.value = false
-        console.log('Sesión VR terminada')
       })
 
       console.log('✓ Sesión VR Inmersiva iniciada')
@@ -104,12 +106,9 @@ export const useWebXR = () => {
       // Configurar renderer para VR/AR
       await renderer.xr.setSession(session)
 
-      // Manejar fin de sesión
+      // Limpiar xrSession cuando termine (el estado isInVR se maneja en el viewer)
       session.addEventListener('end', () => {
         xrSession.value = null
-        isInVR.value = false
-        passthroughEnabled.value = false
-        console.log('Sesión Realidad Mixta terminada')
       })
 
       console.log('✓ Sesión Realidad Mixta iniciada')
@@ -137,7 +136,7 @@ export const useWebXR = () => {
         console.log('✓ Passthrough activado - Realidad Mixta')
       } else {
         // Desactivar passthrough - fondo gris
-        scene.background = new (window as any).THREE.Color(0x333333)
+        scene.background = new THREE.Color(0x333333)
         passthroughEnabled.value = false
         console.log('✓ Passthrough desactivado - VR inmersiva')
       }
