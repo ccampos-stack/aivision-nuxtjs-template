@@ -201,11 +201,11 @@ export const useDigitalTwinVR = () => {
           const thumbstickY = gamepad.axes[3] || 0
           
           if (Math.abs(thumbstickX) > 0.1) {
-            vrModel.rotation.y += thumbstickX * 0.005 // Rotar en Y (horizontal) - Sensibilidad muy reducida
+            vrModel.rotation.y += thumbstickX * 0.005 // Rotar en Y (horizontal) - Velocidad perfecta
             console.log('Rotando Y:', thumbstickX)
           }
           if (Math.abs(thumbstickY) > 0.1) {
-            vrModel.rotation.x += thumbstickY * 0.005 // Rotar en X (vertical) - Sensibilidad muy reducida
+            vrModel.rotation.x += thumbstickY * 0.0015 // Rotar en X (vertical) - Muy suave
             console.log('Rotando X:', thumbstickY)
           }
         }

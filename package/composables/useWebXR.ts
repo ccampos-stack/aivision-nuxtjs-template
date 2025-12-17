@@ -4,6 +4,7 @@ export const useWebXR = () => {
   const isXRSupported = ref(false)
   const xrSession = ref<XRSession | null>(null)
   const isInVR = ref(false)
+  const passthroughEnabled = ref(false)
 
   /**
    * Verificar si el dispositivo soporta WebXR
@@ -26,7 +27,7 @@ export const useWebXR = () => {
   }
 
   /**
-   * Iniciar sesión XR
+   * Iniciar sesión XR inmersiva (VR completa)
    */
   const startXRSession = async (renderer: any) => {
     if (!isXRSupported.value) {
@@ -36,11 +37,12 @@ export const useWebXR = () => {
     try {
       const session = await (navigator as any).xr?.requestSession('immersive-vr', {
         requiredFeatures: ['local-floor'],
-        optionalFeatures: ['hand-tracking', 'layers', 'bounded-floor']
+        optionalFeatures: ['hand-tracking', 'layers', 'bounded-floor', 'depth-sensing']
       })
 
       xrSession.value = session
       isInVR.value = true
+      passthroughEnabled.value = false
 
       // Configurar renderer para VR
       await renderer.xr.setSession(session)
@@ -49,14 +51,98 @@ export const useWebXR = () => {
       session.addEventListener('end', () => {
         xrSession.value = null
         isInVR.value = false
+        passthroughEnabled.value = false
         console.log('Sesión VR terminada')
       })
 
-      console.log('Sesión VR iniciada exitosamente')
+      console.log('✓ Sesión VR Inmersiva iniciada')
       return session
     } catch (error) {
       console.error('Error iniciando sesión XR:', error)
       throw error
+    }
+  }
+
+  /**
+   * Iniciar sesión XR con passthrough (Realidad Mixta)
+   */
+  const startXRSessionWithPassthrough = async (renderer: any, scene: any) => {
+    if (!isXRSupported.value) {
+      throw new Error('WebXR no soportado en este dispositivo')
+    }
+
+    try {
+      // Intentar primero immersive-ar (el modo correcto para passthrough)
+      let session = null
+      try {
+        const arSupported = await (navigator as any).xr?.isSessionSupported('immersive-ar')
+        if (arSupported) {
+          console.log('✓ Immersive-AR soportado, iniciando...')
+          session = await (navigator as any).xr?.requestSession('immersive-ar', {
+            requiredFeatures: ['local-floor'],
+            optionalFeatures: ['hand-tracking', 'layers', 'bounded-floor', 'depth-sensing']
+          })
+        }
+      } catch (arError) {
+        console.log('Immersive-AR no disponible, usando VR con background null')
+      }
+
+      // Si AR no está disponible, usar VR inmersiva con background null
+      if (!session) {
+        session = await (navigator as any).xr?.requestSession('immersive-vr', {
+          requiredFeatures: ['local-floor'],
+          optionalFeatures: ['hand-tracking', 'layers', 'bounded-floor', 'depth-sensing']
+        })
+        // Configurar fondo transparente para simular passthrough
+        scene.background = null
+      }
+
+      xrSession.value = session
+      isInVR.value = true
+      passthroughEnabled.value = true
+
+      // Configurar renderer para VR/AR
+      await renderer.xr.setSession(session)
+
+      // Manejar fin de sesión
+      session.addEventListener('end', () => {
+        xrSession.value = null
+        isInVR.value = false
+        passthroughEnabled.value = false
+        console.log('Sesión Realidad Mixta terminada')
+      })
+
+      console.log('✓ Sesión Realidad Mixta iniciada')
+      return session
+    } catch (error) {
+      console.error('Error iniciando sesión con passthrough:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Habilitar/Deshabilitar Passthrough (Realidad Mixta)
+   */
+  const togglePassthrough = (renderer: any, scene: any) => {
+    if (!xrSession.value) {
+      console.warn('No hay sesión VR activa')
+      return
+    }
+
+    try {
+      if (!passthroughEnabled.value) {
+        // Activar passthrough - fondo transparente
+        scene.background = null
+        passthroughEnabled.value = true
+        console.log('✓ Passthrough activado - Realidad Mixta')
+      } else {
+        // Desactivar passthrough - fondo gris
+        scene.background = new (window as any).THREE.Color(0x333333)
+        passthroughEnabled.value = false
+        console.log('✓ Passthrough desactivado - VR inmersiva')
+      }
+    } catch (error) {
+      console.error('Error toggling passthrough:', error)
     }
   }
 
@@ -75,8 +161,11 @@ export const useWebXR = () => {
     isXRSupported,
     xrSession,
     isInVR,
+    passthroughEnabled,
     checkXRSupport,
     startXRSession,
-    endXRSession
+    startXRSessionWithPassthrough,
+    endXRSession,
+    togglePassthrough
   }
 }

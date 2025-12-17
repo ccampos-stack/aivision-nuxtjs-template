@@ -10,7 +10,7 @@ definePageMeta({
 });
 
 // Composables VR
-const { isXRSupported, isInVR, checkXRSupport, startXRSession, endXRSession } = useWebXR();
+const { isXRSupported, isInVR, passthroughEnabled, checkXRSupport, startXRSession, startXRSessionWithPassthrough, endXRSession, togglePassthrough } = useWebXR();
 const {
   setupVRRenderer,
   createVRButton,
@@ -456,9 +456,9 @@ const initVRFeatures = async () => {
     // Configurar entorno VR (fondo y grid)
     setupVREnvironment(scene);
 
-    // Crear botón VR en el documento body
-    const vrButton = createVRButton(renderer, document.body);
-    console.log('Botón VR creado:', vrButton);
+    // No creamos el botón VR por defecto, usamos botones personalizados
+    // const vrButton = createVRButton(renderer, document.body);
+    // console.log('Botón VR creado:', vrButton);
 
     // Configurar controladores VR
     setupVRControllers(renderer, scene, modelRoot);
@@ -494,9 +494,33 @@ const restoreModelState = () => {
   console.log('✓ Estado del modelo restaurado');
 };
 
+// Función para iniciar VR con modo específico
+const enterVRMode = async (usePassthrough: boolean) => {
+  if (!renderer || !scene) {
+    console.error('Renderer o scene no disponibles');
+    return;
+  }
+  
+  try {
+    if (usePassthrough) {
+      console.log('🌍 Iniciando Realidad Mixta (Passthrough)...');
+      await startXRSessionWithPassthrough(renderer, scene);
+    } else {
+      console.log('🥽 Iniciando VR Inmersiva...');
+      // Configurar fondo oscuro para VR inmersiva
+      scene.background = new THREE.Color(0x333333);
+      await startXRSession(renderer);
+    }
+  } catch (error) {
+    console.error('Error iniciando modo VR:', error);
+    errorMessage.value = 'No se pudo iniciar el modo VR. Verifica que tu dispositivo soporte WebXR.';
+  }
+};
+
 // Manejador de entrada a VR
 const onVRSessionStart = () => {
   console.log('🥽 Sesión VR iniciada');
+  isInVR.value = true; // Actualizar estado de VR
   if (!modelRoot) return;
   
   // Guardar estado original
@@ -510,6 +534,7 @@ const onVRSessionStart = () => {
 // Manejador de salida de VR
 const onVRSessionEnd = () => {
   console.log('👁️ Sesión VR finalizada');
+  isInVR.value = false; // Actualizar estado de VR
   
   // Restaurar estado original
   restoreModelState();
@@ -764,6 +789,13 @@ const toggleAreaMode = () => {
   }
 };
 
+// Función para alternar passthrough
+const handlePassthroughToggle = () => {
+  if (renderer && scene) {
+    togglePassthrough(renderer, scene);
+  }
+};
+
 onMounted(async () => {
   await nextTick();
   console.log('Viewer container:', viewerContainer.value);
@@ -808,7 +840,7 @@ onUnmounted(() => {
             <div class="control-group">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <label class="text-subtitle-2 text-dark">Model ID</label>
-                <span style="font-size: 10px; color: #888; font-weight: 600;">v1.3.4-VR</span>
+                <span style="font-size: 10px; color: #888; font-weight: 600;">v1.4.6-VR</span>
               </div>
               <input
                 v-model.number="modelId"
@@ -847,6 +879,29 @@ onUnmounted(() => {
               >
                 Limpiar Área
               </button>
+            </div>
+
+            <!-- Modos de Realidad Virtual (antes de entrar) -->
+            <div class="control-group mt-4" v-if="!isInVR && isXRSupported">
+              <label class="text-subtitle-2 text-dark mb-2">Seleccionar Modo VR</label>
+              <button
+                @click="enterVRMode(false)"
+                class="btn-vr-mode"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-bottom: 8px;"
+              >
+                🥽 Entrar a VR Inmersiva
+              </button>
+              <button
+                @click="enterVRMode(true)"
+                class="btn-vr-mode"
+                style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"
+              >
+                🌍 Entrar a Realidad Mixta
+              </button>
+              <small style="color: #999; font-size: 11px; display: block; margin-top: 8px;">
+                VR Inmersiva: Entorno virtual completo<br>
+                Realidad Mixta: Ve el mundo real + modelo 3D
+              </small>
             </div>
           </div>
 
@@ -937,6 +992,15 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
+        
+        <!-- Passthrough Toggle Button (flotante, visible solo en VR) -->
+        <button
+          v-if="isInVR"
+          @click="handlePassthroughToggle"
+          :class="['btn-passthrough-toggle', { active: passthroughEnabled }]"
+        >
+          {{ passthroughEnabled ? '🌍 Realidad Mixta' : '🥽 VR Inmersiva' }}
+        </button>
       </div>
     </div>
   </div>
@@ -1039,12 +1103,64 @@ onUnmounted(() => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 8px;
-  font-size: 12px;
-  transition: all 0.3s;
+  font-size: 14px;
+  transition: background 0.3s;
 
   &:hover {
     background: rgba(220, 38, 38, 1);
+  }
+}
+
+.btn-vr-mode {
+  width: 100%;
+  padding: 12px 16px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-passthrough-toggle {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10001;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
   }
 }
 
