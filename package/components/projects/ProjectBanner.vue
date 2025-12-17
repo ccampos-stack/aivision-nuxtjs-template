@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AnimatedIcon from "/images/svgs/astrisk-icon.svg";
-import ManImage from "/images/background/projects-banner.png";
+import ManImage from "/images/background/projects-bannerAV.jpg";
 </script>
 
 <template>
@@ -20,20 +20,19 @@ import ManImage from "/images/background/projects-banner.png";
               class="icon-rotate"
             />
             <p class="text-white text-subtitle-1 mb-0">
-              <span class="opacity-70">A</span>
+              <span class="opacity-70">Una muestra de</span>
               <span class="text-primary opacity-100">
-                showcase of creativity</span
+                creatividad, estrategia</span
               >
               <span class="opacity-70"
-                >, strategy, and results explore the projects that define
-                us.</span
+                > y resultados: explora los proyectos que nos definen.</span
               >
             </p>
           </div>
         </div>
         <!-- Bottom row: title + badge -->
         <div class="d-flex flex-md-row flex-column ga-5 align-md-end align-start mt-md-6 mt-3">
-          <h1 class="text-white text-h1 font-weight-bold mb-0">Projects</h1>
+          <h1 class="text-white text-h1 font-weight-bold mb-0">Proyectos</h1>
           <SharedBigBadge />
         </div>
       </div>

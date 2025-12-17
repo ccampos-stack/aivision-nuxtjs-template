@@ -3,7 +3,7 @@
   <HomepageStatsAndFacts />
   <HomepagePortfolio />
   <HomepageWhatweDo />
-  <HomepageWhyChoose />
+  <!-- <HomepageWhyChoose /> -->
   <!-- <HomepageStoriesFromClient /> -->
   <HomepageMeetOurTeam/>
   <!-- <HomepagePricing/> -->

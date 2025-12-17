@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import Bg from "/images/background/feature-img.jpg";
+import Bg from "/images/background/feature-imgAV.jpg";
 const items = [
   {
     title: "Analítica Industrial",

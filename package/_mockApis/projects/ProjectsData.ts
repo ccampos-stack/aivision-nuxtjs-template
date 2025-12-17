@@ -4,9 +4,9 @@ import { sub } from "date-fns";
 import mock from "../mockAdapter";
 
 // Main Images
-import project1 from "/images/projects/snapclear.webp";
-import project2 from "/images/projects/project1.webp";
-import project3 from "/images/projects/project2.webp";
+import project1 from "/images/projects/PProdiver.jpg";
+import project2 from "/images/projects/PPuertecillo.jpg";
+import project3 from "/images/projects/PGemelos.jpg";
 import project4 from "/images/projects/project3.webp";
 import project5 from "/images/projects/project4.webp";
 import project6 from "/images/projects/project5.webp";
@@ -39,42 +39,42 @@ const chance = new Chance();
 const ProjectGridData: ProjectsTypes[] = [
   {
     id: chance.integer({ min: 1, max: 2000 }),
-    project_title: "Digital Twin (Gemelo Digital)",
+    project_title: "Recorrido Virtual Prodiver",
     project_image: project1,
     tag1: "Modelado 3D",
     tag2: "Inspección Estructural",
-    industry: "Technology",
+    industry: "Naval e Industrial",
     raised: "1.1M",
     description:
-      "<p>Snapclear is a cutting-edge agency project dedicated to producing crystal-clear visual content that captures attention and leaves a lasting impact. By blending creativity with precision, Snapclear ensures every piece of content stands out with exceptional clarity and quality.<p>",
+      "<p>Plataforma digital de inspección que captura y reproduce el entorno físico de un muelle y sus estructuras asociadas con una fidelidad excepcional. Esta solución integral ofrece un recorrido inmersivo estilo street view que permite a los usuarios navegar por el activo de forma remota, reduciendo costos y riesgos de seguridad.</p><p><strong>Captura de Entorno:</strong> Integración de videos y fotografías de ultra alta resolución.</p><p><strong>Gemelo Digital 3D:</strong> Generación de un Modelo 3D de precisión del muelle, permitiendo mediciones y análisis estructural detallados a distancia.</p><p><strong>Información Integrada:</strong> Incorporación de puntos de interés interactivos (hotspots) con información de la Escuela de Buceo (protocolos, activos, áreas de riesgo, etc.).</p><p><strong>Uso Principal y Distribución:</strong> Esta herramienta tiene un uso dual: sirve como una poderosa herramienta de inspección remota y como una plataforma avanzada para capacitación y entrenamiento seguro. Se entrega en dos formatos de alto impacto: una versión web accesible desde cualquier navegador y una versión ejecutable para PC, optimizada para inmersión total en Realidad Virtual (VR), garantizando una adopción rápida y resultados medibles.</p>",
     detail_img_1: project11,
     detail_img_2: project12,
     detail_img_3: project13,
   },
   {
     id: chance.integer({ min: 1, max: 2000 }),
-    project_title: "Predictive Insight (Análisis Predictivo)",
+    project_title: "Master Plan Puertecillo",
     project_image: project2,
-    tag1: "Machine Learning",
-    tag2: "Mantenimiento 4.0",
-    industry: "Shoes",
+    tag1: "Recorrido Virtual",
+    tag2: "Modelado 3D",
+    industry: "Inmobiliario",
     raised: "1.2M",
     description:
-      "<p>Beyond visual excellence, Snapclear offers innovative digital solutions tailored to meet diverse client needs. From strategic design to advanced technological tools, the agency empowers brands to communicate their message effectively and elevate their digital presence. Exploring the world of footwear reveals a rich tapestry of blogs catering to various interests, from high-quality craftsmanship to the latest trends and practical advice.</p> <h4>Here are some notable shoe blogs you might find engaging:</h4> <p>Shoegazing is a prominent platform dedicated to high-quality shoes, particularly welted footwear. The blog offers in-depth articles on shoe care, construction techniques, buying guides, and industry news. For instance, a recent podcast episode features an interview with Takashi Horiguchi of Super 8 Shoes, discussing the allure of vintage men's footwear.</p>",
+      "<p>Plataforma interactiva de visualización del Master Plan Puertecillo, que permite explorar el proyecto inmobiliario de manera inmersiva. Esta solución digital integra recorridos virtuales, información detallada de las propiedades y el entorno natural que rodea el desarrollo.</p><p><strong>Recorrido Virtual Interactivo:</strong> Navegación fluida tipo street view que permite explorar cada rincón del proyecto desde cualquier dispositivo.</p><p><strong>Información Integrada:</strong> Hotspots interactivos con datos de cada lote, amenidades y características del entorno natural de Puertecillo.</p><p><strong>Visualización del Entorno:</strong> Captura de alta calidad del paisaje costero y las características únicas de la zona.</p>",
     detail_img_1: project31,
     detail_img_2: project32,
     detail_img_3: project33,
   },
   {
     id: chance.integer({ min: 1, max: 2000 }),
-    project_title: "Inmersión VR Industrial",
+    project_title: "Visor de Gemelos Digitales 3D",
     project_image: project3,
-    tag1: "Realidad Virtual",
-    tag2: "Capacitación Segura",
-    industry: "Perfume",
+    tag1: "Visualización 3D",
+    tag2: "Análisis Técnico",
+    industry: "Industrial y Naval",
     raised: "1.1M",
     description:
-      "<h4>Sanae Intoxicants Blog:</h4> <p>This blog explores the profound connection between scent and memory. An article titled Transcending Words and Thoughts: Using Scent as a Time Machine Tool discusses how fragrances can transport us to different moments in time.</p> <h5>The Dry Down:</h5> <p>A newsletter about perfume, offering in-depth discussions on various fragrances and the art of scent appreciation. Authored by Rachel, it provides unique insights into the world of perfumes.</p> <h5>Perfume of Max:</h5> <p>Max Vnoutchkov, an expert perfume reviewer and professional videographer, shares his fragrance reviews and insights on his Instagram profile. His content offers a visual and descriptive exploration of various scents.</p> <h5>SCENTMAX Blog:</h5> <p>This blog covers topics like the magical effects of different scents and the benefits of aromatherapy. It provides insights into how fragrances can influence mood and well-being.</p>",
+      "<p>Plataforma avanzada de visualización y análisis de gemelos digitales desarrollada con Angular y Three.js, que permite la inspección detallada de activos industriales mediante renderizado 3D de alta fidelidad.</p><h4>¿Qué son los Gemelos Digitales?</h4><p>Los gemelos digitales son réplicas virtuales exactas de activos físicos industriales y navales, capturados mediante fotogrametría, LiDAR y escaneo 3D. Estas réplicas digitales permiten realizar inspecciones remotas, análisis técnicos y mediciones precisas sin necesidad de estar físicamente en el lugar, optimizando tiempos y reduciendo riesgos operacionales.</p><h4>Capacidades Técnicas:</h4><p><strong>Visualización Multi-formato:</strong> Soporte para GLB/GLTF, PLY (nubes de puntos), OBJ, FBX y Gaussian Splats fotogramétricos, con renderizado PBR (Physically Based Rendering) y environment mapping HDR para realismo máximo.</p><p><strong>Sistema de Mediciones de Precisión:</strong> Herramientas de medición 3D que permiten obtener distancias exactas entre puntos, calcular áreas de superficies mediante triangulación de polígonos, y analizar volúmenes con precisión milimétrica. Esto permite realizar mediciones remotas tan precisas como si estuvieras físicamente en el sitio.</p><p><strong>Anotaciones Georreferenciadas:</strong> Sistema de marcadores 3D persistentes con overlays HTML sincronizados, almacenamiento en base de datos y generación automática de reportes técnicos para documentar hallazgos y coordinar trabajos de mantenimiento.</p><p><strong>Controles de Iluminación:</strong> Panel dinámico para ajuste en tiempo real de exposición (0.1-2.0), ambient light, hemisphere light, directional light con sombras, y environment map intensity para optimizar visualización según tipo de superficie y condiciones del activo.</p>",
     detail_img_1: project21,
     detail_img_2: project22,
     detail_img_3: project23,

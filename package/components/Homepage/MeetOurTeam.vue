@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Icon } from "@iconify/vue";
-import img1 from "/images/team/team-img-1.png";
-import img2 from "/images/team/team-img-2.png";
-import img3 from "/images/team/team-img-3.png";
-import img4 from "/images/team/team-img-4.png";
-import img5 from "/images/team/team-img-5.png";
-import img6 from "/images/team/team-img-6.png";
+import img1 from "/images/team/team-img-1AV.png";
+import img2 from "/images/team/team-img-2AV.png";
+import img3 from "/images/team/team-img-3AV.png";
+import img4 from "/images/team/team-img-4AV.png";
+import img5 from "/images/team/team-img-5AV.png";
+import img6 from "/images/team/team-img-6AV.png";
 
 const items = [
   {
@@ -41,7 +41,7 @@ const items = [
   },
   {
     name: "Gianfranco Sáez",
-    role: "Drone & 3D Modeling Specialist",
+    role: "Drone & 3D Modeling Specialist - Prodiver",
     image: img6,
     linkedin: "",
   },

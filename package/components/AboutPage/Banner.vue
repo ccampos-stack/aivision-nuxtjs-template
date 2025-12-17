@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AnimatedIcon from "/images/svgs/astrisk-icon.svg";
-import ManImage from "/images/background/aboutus-banner.png";
+import ManImage from "/images/background/aboutus-bannerAV.png";
 </script>
 
 <template>

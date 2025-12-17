@@ -10,12 +10,39 @@ export default defineNuxtConfig({
   
   ssr: false,
   
+  // Deshabilitar DevTools
+  devtools: { enabled: false },
+  
   // Configuración para deployment estático
   nitro: {
     prerender: {
-      routes: ['/']
+      routes: [
+        '/', 
+        '/viewer'
+      ]
     },
     serveStatic: true
+  },
+  
+  // Runtime config para la API
+  runtimeConfig: {
+    public: {
+      apiBase: 'https://www.inspexion.cydgroup.cl'
+    }
+  },
+  
+  // Vite proxy para desarrollo (evita CORS)
+  vite: {
+    server: {
+      proxy: {
+        '/api/gemelo': {
+          target: 'https://www.inspexion.cydgroup.cl',
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path
+        }
+      }
+    }
   },
 
   typescript: {

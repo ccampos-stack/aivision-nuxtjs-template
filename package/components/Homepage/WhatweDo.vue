@@ -58,7 +58,7 @@ const activeItem = ref(items[0]);
             <SharedCommonHeadingWhite
               class="mw-670"
               title="Soluciones Tecnológicas para la Industria"
-              subtitle="Fusionamos la experiencia técnica con la IA de vanguardia para ofrecer plataformas integrales que garantizan la seguridad, optimizan la gestión y reducen costos en activos críticos."
+              subtitle="Fusionamos la experiencia técnica con la última tecnología para ofrecer plataformas integrales que garantizan la seguridad, optimizan la gestión y reducen costos en activos críticos."
             />
           </div>
         </v-col>
