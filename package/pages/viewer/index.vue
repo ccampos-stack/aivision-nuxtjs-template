@@ -10,7 +10,13 @@ definePageMeta({
 });
 
 // Composables VR
-const { isXRSupported, isInVR, passthroughEnabled, checkXRSupport, startXRSession, startXRSessionWithPassthrough, endXRSession, togglePassthrough } = useWebXR();
+const { isXRSupported, isARSupported, isInVR, passthroughEnabled, checkXRSupport, startXRSession, startXRSessionWithPassthrough, startARSession, endXRSession, togglePassthrough } = useWebXR();
+
+// Composable QR
+const { generateModelQR, downloadQR, copyModelUrl } = useQRCode();
+
+// Route para detectar query params
+const route = useRoute();
 const {
   setupVRRenderer,
   createVRButton,
@@ -32,6 +38,12 @@ const modelInfo = ref<any>(null);
 const measuring = ref(false);
 const areaMode = ref(false);
 const errorMessage = ref<string>('');
+
+// Refs para QR Code
+const qrCodeUrl = ref<string | null>(null);
+const showQRModal = ref(false);
+const urlCopied = ref(false);
+const qrPlatform = ref<'web' | 'android' | 'ios'>('web');
 
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
@@ -128,6 +140,10 @@ const initThree = () => {
   };
   controls.enableRotate = true;
   controls.rotateSpeed = 1.0;
+  
+  // Habilitar pan (movimiento) con gestos táctiles
+  controls.enablePan = true;
+  controls.panSpeed = 1.0;
 
   // Iluminación - Sin hemisférica para evitar degradado
   ambientLight = new THREE.AmbientLight(0xffffff, ambientIntensity.value);
@@ -184,28 +200,46 @@ const initThree = () => {
 };
 
 const onViewerClick = (event: MouseEvent) => {
-  if (!viewerContainer.value || !modelRoot) return;
-  if (!measuring.value && !areaMode.value) return;
+  if (!viewerContainer.value || !modelRoot) {
+    console.log('❌ No hay viewer container o modelo cargado');
+    return;
+  }
+  if (!measuring.value && !areaMode.value) {
+    return;
+  }
 
   const rect = viewerContainer.value.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
+  console.log('🖱️ Click detectado:', { x: mouse.x.toFixed(2), y: mouse.y.toFixed(2) });
+
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObject(modelRoot, true);
 
+  console.log('🎯 Intersecciones encontradas:', intersects.length);
+
   if (intersects.length > 0) {
     const point = intersects[0].point.clone();
+    console.log('📍 Punto interceptado:', { 
+      x: point.x.toFixed(2), 
+      y: point.y.toFixed(2), 
+      z: point.z.toFixed(2) 
+    });
 
     if (measuring.value) {
       addMeasurePoint(point);
     } else if (areaMode.value) {
       addAreaPoint(point);
     }
+  } else {
+    console.log('⚠️ No se interceptó el modelo');
   }
 };
 
 const addMeasurePoint = (point: THREE.Vector3) => {
+  console.log('➕ Agregando punto de medición:', measurePoints.length + 1);
+  
   // Crear marcador visual
   const markerGeometry = new THREE.SphereGeometry(0.15, 16, 16);
   const markerMaterial = new THREE.MeshBasicMaterial({ 
@@ -219,16 +253,43 @@ const addMeasurePoint = (point: THREE.Vector3) => {
   measureMarkers.push(marker);
   measurePoints.push(point);
 
+  console.log('✅ Marcador agregado. Total de puntos:', measurePoints.length);
+
   // Si hay 2 puntos, calcular distancia
   if (measurePoints.length === 2) {
     const distance = measurePoints[0].distanceTo(measurePoints[1]);
+    console.log('📏 Distancia calculada:', distance.toFixed(3), 'm');
     drawMeasureLine();
     showMeasureLabel(distance);
-  }
-
-  // Máximo 2 puntos
-  if (measurePoints.length >= 2) {
-    measuring.value = false;
+    
+    // Limpiar arrays para permitir una nueva medición
+    // pero NO limpiar los marcadores visuales ni la línea actual
+    // (se limpiarán cuando se inicie la próxima medición)
+    measurePoints.length = 0;
+    console.log('✓ Puntos limpiados. Modo medición sigue activo para nueva medición.');
+  } else if (measurePoints.length === 1) {
+    // Si es el primer punto de una nueva medición, limpiar la medición anterior
+    if (measureMarkers.length > 2) {
+      // Remover los marcadores antiguos (mantener solo el último agregado)
+      const currentMarker = measureMarkers.pop(); // Guardar el marcador actual
+      measureMarkers.forEach(marker => scene.remove(marker));
+      measureMarkers.length = 0;
+      if (currentMarker) measureMarkers.push(currentMarker); // Restaurar el marcador actual
+      
+      // Limpiar línea anterior
+      if (measureLine) {
+        scene.remove(measureLine);
+        measureLine = null;
+      }
+      
+      // Limpiar label anterior
+      if (measureLabel) {
+        measureLabel.remove();
+        measureLabel = null;
+      }
+      
+      console.log('🧹 Medición anterior limpiada');
+    }
   }
 };
 
@@ -414,10 +475,6 @@ const clearMeasurements = () => {
     measureLabel.remove();
     measureLabel = null;
   }
-  
-  // Desactivar callback VR
-  setMeasureCallback(null);
-  measuring.value = false;
 };
 
 const clearArea = () => {
@@ -518,6 +575,22 @@ const enterVRMode = async (usePassthrough: boolean) => {
     console.error('Error iniciando modo VR:', error);
     console.error('Error completo:', error.message, error.stack);
     errorMessage.value = `Error VR: ${error.message || 'Verifica que tu dispositivo soporte WebXR'}`;
+  }
+};
+
+// Función para iniciar AR móvil
+const enterARMode = async () => {
+  if (!renderer || !scene) {
+    console.error('Renderer o scene no disponibles');
+    return;
+  }
+  
+  try {
+    console.log('📱 Iniciando Realidad Aumentada móvil...');
+    await startARSession(renderer, scene);
+  } catch (error: any) {
+    console.error('Error iniciando modo AR:', error);
+    errorMessage.value = `Error AR: ${error.message || 'Verifica que tu dispositivo soporte AR'}`;
   }
 };
 
@@ -778,18 +851,27 @@ const resetLighting = () => {
   updateDir(0.8);
 };
 
-const toggleMeasure = () => {
-  measuring.value = !measuring.value;
+const toggleMeasure = async () => {
+  const newValue = !measuring.value;
+  measuring.value = newValue;
+  
+  await nextTick(); // Asegurar que Vue actualice la UI
+  
+  console.log('🔄 Toggling measuring to:', measuring.value);
+  console.log('🔄 Nuevo estado del botón:', measuring.value ? 'ON' : 'OFF');
+  
   if (measuring.value) {
-    clearMeasurements();
+    // Activar modo medición
+    clearMeasurements(); // Limpiar mediciones anteriores
     areaMode.value = false;
     clearArea();
     // Activar medición en VR
     setMeasureCallback(addMeasurePoint);
     console.log('✓ Modo medición activado (incluye VR)');
   } else {
-    // Desactivar medición en VR
-    setMeasureCallback(null);
+    // Desactivar modo medición
+    clearMeasurements(); // Limpiar las mediciones visuales
+    setMeasureCallback(null); // Desactivar callback VR
     console.log('✓ Modo medición desactivado');
   }
 };
@@ -810,6 +892,157 @@ const handlePassthroughToggle = () => {
   }
 };
 
+// Funciones para QR Code
+const generateQR = async (platform: 'web' | 'android' | 'ios' = 'web') => {
+  if (!modelId.value) {
+    errorMessage.value = 'Primero carga un modelo para generar el QR';
+    return;
+  }
+  
+  qrPlatform.value = platform;
+  
+  // Para Android e iOS, obtener el nombre real del archivo desde la API
+  let fileName: string | undefined;
+  if (platform === 'android' || platform === 'ios') {
+    try {
+      const { getModel } = useGemelo();
+      const model = await getModel(modelId.value);
+      
+      if (model && (model.convertedPath || model.filePath)) {
+        const filePath = model.convertedPath || model.filePath;
+        fileName = filePath.split('/').pop();
+        console.log('📁 Nombre de archivo detectado:', fileName);
+      }
+    } catch (error) {
+      console.error('Error al obtener nombre de archivo:', error);
+    }
+  }
+  
+  const qr = await generateModelQR(modelId.value, platform, fileName);
+  if (qr) {
+    qrCodeUrl.value = qr;
+    showQRModal.value = true;
+    console.log(`✅ Código QR ${platform} generado para modelo:`, modelId.value);
+  } else {
+    errorMessage.value = 'Error al generar código QR';
+  }
+};
+
+const downloadQRCode = () => {
+  if (qrCodeUrl.value && modelInfo.value) {
+    const modelName = modelInfo.value.name?.replace(/\s+/g, '-') || `modelo-${modelId.value}`;
+    downloadQR(qrCodeUrl.value, modelName);
+  }
+};
+
+const copyUrl = async () => {
+  const success = await copyModelUrl(modelId.value);
+  if (success) {
+    urlCopied.value = true;
+    setTimeout(() => {
+      urlCopied.value = false;
+    }, 2000);
+  } else {
+    errorMessage.value = 'Error al copiar URL';
+  }
+};
+
+// Función para probar URL del GLB
+const testGLBUrl = async () => {
+  if (!modelId.value) {
+    errorMessage.value = 'Primero carga un modelo';
+    return;
+  }
+
+  // Obtener información del modelo desde la API
+  const { getModel } = useGemelo();
+  
+  try {
+    const model = await getModel(modelId.value);
+    if (!model || !model.filePath) {
+      errorMessage.value = 'Modelo sin archivo asociado';
+      return;
+    }
+
+    const API_BASE = 'https://www.inspexion.cydgroup.cl';
+    
+    // Extraer nombre del archivo
+    const filePath = model.convertedPath || model.filePath;
+    const fileName = filePath.split('/').filter(Boolean).pop() || `${modelId.value}.glb`;
+    const glbUrl = `${API_BASE}/api/gemelo/files/${fileName}`;
+    
+    console.log('🔍 Probando URL:', glbUrl);
+    console.log('📁 Archivo:', fileName);
+    
+    // Intentar fetch con GET (el servidor no acepta HEAD)
+    const response = await fetch(glbUrl, { 
+      method: 'GET',
+      mode: 'cors'
+    });
+    
+    if (response.ok) {
+      const size = response.headers.get('content-length');
+      const contentType = response.headers.get('content-type');
+      const cors = response.headers.get('access-control-allow-origin');
+      
+      console.log('✅ Archivo GLB accesible:', response.status);
+      console.log('📦 Content-Type:', contentType);
+      console.log('🌍 CORS:', cors);
+      console.log('📏 Tamaño:', size ? (parseInt(size) / 1024 / 1024).toFixed(2) + ' MB' : 'Desconocido');
+      
+      // Verificar si tiene los headers necesarios para Scene Viewer
+      const corsOk = cors === '*' || cors?.includes('arvr.google.com');
+      const typeOk = contentType === 'model/gltf-binary' || contentType === 'application/octet-stream';
+      
+      let warningMsg = '';
+      if (!corsOk) {
+        warningMsg += '\n⚠️ CORS no configurado para Scene Viewer\n   Necesita: Access-Control-Allow-Origin: *';
+      }
+      if (!typeOk) {
+        warningMsg += '\n⚠️ Content-Type incorrecto\n   Necesita: model/gltf-binary\n   Actual: ' + contentType;
+      }
+      
+      alert(`✅ Archivo accesible\n\nURL: ${glbUrl}\nStatus: ${response.status}\nContent-Type: ${contentType}\nCORS: ${cors || 'No establecido'}\nTamaño: ${size ? (parseInt(size) / 1024 / 1024).toFixed(2) + ' MB' : 'Desconocido'}${warningMsg}`);
+    } else {
+      console.error('❌ Error HTTP:', response.status, response.statusText);
+      errorMessage.value = `❌ Archivo no encontrado (${response.status} - ${response.statusText})\n\nURL: ${glbUrl}\n\nPosibles causas:\n- El archivo no existe en el servidor\n- Verifica el nombre del archivo: ${fileName}`;
+    }
+  } catch (error: any) {
+    console.error('❌ Error:', error);
+    errorMessage.value = `❌ Error: ${error.message}\n\nPosibles causas:\n- CORS bloqueado\n- Servidor no responde\n- Archivo no accesible`;
+  }
+};
+
+// Función para abrir Scene Viewer directamente (probar sin QR)
+const openSceneViewer = async () => {
+  if (!modelId.value) {
+    errorMessage.value = 'Primero carga un modelo';
+    return;
+  }
+
+  const { getModel } = useGemelo();
+  
+  try {
+    const model = await getModel(modelId.value);
+    if (!model || !model.filePath) {
+      errorMessage.value = 'Modelo sin archivo asociado';
+      return;
+    }
+
+    const API_BASE = 'https://www.inspexion.cydgroup.cl';
+    const filePath = model.convertedPath || model.filePath;
+    const fileName = filePath.split('/').filter(Boolean).pop() || `${modelId.value}.glb`;
+    const glbUrl = `${API_BASE}/api/gemelo/files/${fileName}`;
+    const sceneViewerUrl = `https://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbUrl)}&mode=ar_preferred&title=${encodeURIComponent(model.nombre || `Modelo ${modelId.value}`)}`;
+    
+    console.log('🚀 Abriendo Scene Viewer:', sceneViewerUrl);
+    console.log('📁 Archivo:', fileName);
+    window.open(sceneViewerUrl, '_blank');
+  } catch (error: any) {
+    errorMessage.value = `Error: ${error.message}`;
+  }
+};
+
 onMounted(async () => {
   await nextTick();
   console.log('Viewer container:', viewerContainer.value);
@@ -822,7 +1055,15 @@ onMounted(async () => {
   } else {
     console.error('Viewer container not found!');
   }
-  // loadModel(); // Descomentar cuando tengas la API lista
+  
+  // Auto-cargar modelo desde query parameter (para QR codes)
+  const modelIdFromQuery = route.query.model as string;
+  if (modelIdFromQuery) {
+    modelId.value = parseInt(modelIdFromQuery);
+    console.log('📱 Cargando modelo desde QR:', modelId.value);
+    await loadModel();
+  }
+  // loadModel(); // Descomentar para testing manual
 });
 
 onUnmounted(() => {
@@ -854,7 +1095,7 @@ onUnmounted(() => {
             <div class="control-group">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <label class="text-subtitle-2 text-dark">Model ID</label>
-                <span style="font-size: 10px; color: #888; font-weight: 600;">v1.5.4-VR</span>
+                <span style="font-size: 10px; color: #888; font-weight: 600;">v1.8.4-VR-AR-Fixed</span>
               </div>
               <input
                 v-model.number="modelId"
@@ -866,18 +1107,13 @@ onUnmounted(() => {
               <button @click="loadModel" class="btn-load">Cargar Modelo</button>
             </div>
 
-            <div class="control-group mt-4">
+            <div class="control-group mt-4" :key="`measure-${measuring}`">
               <button
                 @click="toggleMeasure"
                 :class="['btn-tool', { active: measuring }]"
+                :style="{ backgroundColor: measuring ? '#2563eb' : '#6b7280' }"
               >
                 {{ measuring ? 'Distancia: ON' : 'Distancia: OFF' }}
-              </button>
-              <button
-                @click="toggleAreaMode"
-                :class="['btn-tool', { active: areaMode }]"
-              >
-                {{ areaMode ? 'Área: ON' : 'Área: OFF' }}
               </button>
               <button
                 @click="clearMeasurements"
@@ -885,13 +1121,6 @@ onUnmounted(() => {
                 v-if="measurePoints.length > 0"
               >
                 Limpiar Distancia
-              </button>
-              <button
-                @click="clearArea"
-                class="btn-clear"
-                v-if="areaPoints.length > 0"
-              >
-                Limpiar Área
               </button>
             </div>
 
@@ -915,6 +1144,63 @@ onUnmounted(() => {
               <small style="color: #999; font-size: 11px; display: block; margin-top: 8px;">
                 VR Inmersiva: Entorno virtual completo<br>
                 Realidad Mixta: Ve el mundo real + modelo 3D
+              </small>
+            </div>
+
+            <!-- Realidad Aumentada para Móviles -->
+            <div class="control-group mt-4" v-if="!isInVR && isARSupported">
+              <label class="text-subtitle-2 text-dark mb-2">Realidad Aumentada</label>
+              <button
+                @click="enterARMode"
+                class="btn-vr-mode"
+                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"
+              >
+                📱 Ver en AR (Móvil)
+              </button>
+              <small style="color: #999; font-size: 11px; display: block; margin-top: 8px;">
+                Usa la cámara de tu celular para ver el modelo 3D en tu espacio
+              </small>
+            </div>
+
+            <!-- Código QR para compartir -->
+            <div class="control-group mt-4" v-if="!isInVR">
+              <label class="text-subtitle-2 text-dark mb-2">Compartir Modelo</label>
+              
+              <!-- QR Web (WebXR) -->
+              <button
+                @click="generateQR('web')"
+                class="btn-qr-type"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
+                :disabled="!modelRoot"
+              >
+                🌐 QR Web (WebXR)
+              </button>
+              
+              <!-- QR Android (Scene Viewer - AR Instantáneo) -->
+              <button
+                @click="generateQR('android')"
+                class="btn-qr-type"
+                style="background: linear-gradient(135deg, #34A853 0%, #0F9D58 100%);"
+                :disabled="!modelRoot"
+              >
+                🤖 QR Android (AR Instantáneo)
+              </button>
+              
+              <!-- QR iOS (Quick Look - Requiere .usdz) -->
+              <button
+                @click="generateQR('ios')"
+                class="btn-qr-type"
+                style="background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%);"
+                :disabled="!modelRoot"
+                title="Requiere archivo .usdz (convertir en Blender)"
+              >
+                🍎 QR iOS (Quick Look)
+              </button>
+
+              <small style="color: #999; font-size: 11px; display: block; margin-top: 12px;">
+                <strong>Web:</strong> Navegador con WebXR<br>
+                <strong>Android:</strong> AR instantáneo con Scene Viewer<br>
+                <strong>iOS:</strong> AR instantáneo (requiere .usdz)
               </small>
             </div>
           </div>
@@ -1015,6 +1301,81 @@ onUnmounted(() => {
         >
           {{ passthroughEnabled ? '🌍 Realidad Mixta' : '🥽 VR Inmersiva' }}
         </button>
+
+        <!-- Modal QR Code -->
+        <div v-if="showQRModal" class="qr-modal-overlay" @click="showQRModal = false">
+          <div class="qr-modal-content" @click.stop>
+            <div class="qr-modal-header">
+              <h2 class="text-h5">
+                <span v-if="qrPlatform === 'web'">🌐 Escanea con tu celular</span>
+                <span v-else-if="qrPlatform === 'android'">🤖 AR Instantáneo - Android</span>
+                <span v-else>🍎 AR Instantáneo - iOS</span>
+              </h2>
+              <button @click="showQRModal = false" class="btn-close-modal">✕</button>
+            </div>
+            
+            <div class="qr-modal-body">
+              <img 
+                v-if="qrCodeUrl" 
+                :src="qrCodeUrl" 
+                alt="QR Code"
+                class="qr-image"
+              />
+              
+              <!-- Instrucciones según plataforma -->
+              <div v-if="qrPlatform === 'web'" class="qr-instructions-box qr-web">
+                <p class="qr-instructions">
+                  <strong>WebXR - Navegador</strong><br>
+                  Escanea el QR → Abre en navegador → Presiona "Ver en AR"
+                </p>
+                <small style="color: #999;">
+                  ✅ Compatible con cualquier celular con WebXR<br>
+                  ⚠️ Requiere navegador moderno (Chrome, Safari)
+                </small>
+              </div>
+
+              <div v-else-if="qrPlatform === 'android'" class="qr-instructions-box qr-android">
+                <p class="qr-instructions">
+                  <strong>🚀 AR Instantáneo</strong><br>
+                  Escanea el QR → Scene Viewer se abre → ¡AR inmediato!
+                </p>
+                <small style="color: #999;">
+                  ✅ No requiere navegador<br>
+                  ✅ Funciona en Android 7+ con ARCore<br>
+                  ✅ Ideal para sitios turísticos
+                </small>
+              </div>
+
+              <div v-else class="qr-instructions-box qr-ios">
+                <p class="qr-instructions">
+                  <strong>🚀 AR Instantáneo</strong><br>
+                  Escanea el QR → Quick Look se abre → ¡AR inmediato!
+                </p>
+                <small style="color: #ff9500;">
+                  ⚠️ <strong>IMPORTANTE:</strong> Requiere archivo .usdz<br>
+                  📝 Exporta tu modelo desde Blender a .usdz<br>
+                  📤 Sube el archivo .usdz al servidor
+                </small>
+              </div>
+              
+              <div class="qr-model-info" v-if="modelInfo">
+                <p><strong>Modelo:</strong> {{ modelInfo.name }}</p>
+                <p><strong>ID:</strong> {{ modelId }}</p>
+                <p v-if="qrPlatform === 'android'"><strong>Formato:</strong> .glb (Scene Viewer)</p>
+                <p v-if="qrPlatform === 'ios'"><strong>Formato:</strong> .usdz (Quick Look)</p>
+              </div>
+            </div>
+
+            <div class="qr-modal-actions">
+              <button @click="downloadQRCode" class="btn-qr-action btn-primary">
+                ⬇️ Descargar QR
+              </button>
+              <button @click="copyUrl" class="btn-qr-action btn-secondary">
+                {{ urlCopied ? '✓ Copiado!' : '📋 Copiar URL' }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1148,6 +1509,38 @@ onUnmounted(() => {
 
   &:active {
     transform: translateY(0);
+  }
+}
+
+.btn-qr-type {
+  width: 100%;
+  padding: 10px 14px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 
@@ -1468,6 +1861,210 @@ onUnmounted(() => {
       padding: 5px;
       margin-top: 4px;
     }
+  }
+}
+
+// Estilos para Modal QR
+.qr-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.qr-modal-content {
+  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+  border-radius: 16px;
+  padding: 0;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.qr-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  h2 {
+    color: white;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
+
+.btn-close-modal {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+}
+
+.qr-modal-body {
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.qr-image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 12px;
+  background: white;
+  padding: 16px;
+  margin: 0 auto;
+  display: block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.qr-instructions {
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.qr-instructions-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 16px;
+  border-left: 4px solid;
+
+  &.qr-web {
+    border-left-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+  }
+
+  &.qr-android {
+    border-left-color: #34A853;
+    background: rgba(52, 168, 83, 0.1);
+  }
+
+  &.qr-ios {
+    border-left-color: #007AFF;
+    background: rgba(0, 122, 255, 0.1);
+  }
+
+  .qr-instructions {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: white;
+    
+    strong {
+      font-size: 15px;
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
+
+  small {
+    display: block;
+    line-height: 1.6;
+    font-size: 12px;
+  }
+}
+
+.qr-model-info {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 16px;
+  text-align: left;
+
+  p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 6px 0;
+    font-size: 13px;
+
+    strong {
+      color: white;
+      margin-right: 8px;
+    }
+  }
+}
+
+.qr-modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-qr-action {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  &.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+  }
+
+  &.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
   }
 }
 </style>

@@ -79,6 +79,9 @@ const ProjectGridData: ProjectsTypes[] = [
     detail_img_2: project22,
     detail_img_3: project23,
   },
+  
+  // Proyectos ocultos temporalmente - Para editar después
+  /*
   {
     id: chance.integer({ min: 1, max: 2000 }),
     project_title: "Monitoreo Aéreo Automatizado",
@@ -123,6 +126,7 @@ const ProjectGridData: ProjectsTypes[] = [
     detail_img_2: project52,
     detail_img_3: project53,
   },
+  */
 ];
 
 mock.onGet("/api/data/projects/grid").reply(() => {

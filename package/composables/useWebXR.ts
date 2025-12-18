@@ -3,6 +3,7 @@ import * as THREE from 'three'
 
 export const useWebXR = () => {
   const isXRSupported = ref(false)
+  const isARSupported = ref(false)
   const xrSession = ref<XRSession | null>(null)
   const isInVR = ref(false)
   const passthroughEnabled = ref(false)
@@ -16,13 +17,20 @@ export const useWebXR = () => {
         const supported = await (navigator as any).xr?.isSessionSupported('immersive-vr')
         isXRSupported.value = supported || false
         console.log('WebXR Support:', isXRSupported.value)
+        
+        // También verificar soporte AR
+        const arSupported = await (navigator as any).xr?.isSessionSupported('immersive-ar')
+        isARSupported.value = arSupported || false
+        console.log('WebXR AR Support:', isARSupported.value)
       } else {
         console.log('WebXR no disponible en este navegador')
         isXRSupported.value = false
+        isARSupported.value = false
       }
     } catch (error) {
       console.error('Error verificando soporte XR:', error)
       isXRSupported.value = false
+      isARSupported.value = false
     }
     return isXRSupported.value
   }
@@ -156,14 +164,55 @@ export const useWebXR = () => {
     }
   }
 
+  /**
+   * Iniciar sesión AR para móviles (Realidad Aumentada con cámara)
+   */
+  const startARSession = async (renderer: any, scene: any) => {
+    if (!isARSupported.value) {
+      throw new Error('AR no soportado en este dispositivo')
+    }
+
+    try {
+      console.log('📱 Iniciando sesión AR móvil...')
+      
+      // Para AR móvil, usar configuración mínima sin requiredFeatures
+      const session = await (navigator as any).xr?.requestSession('immersive-ar', {
+        optionalFeatures: ['local', 'local-floor', 'bounded-floor', 'unbounded', 'hit-test', 'dom-overlay', 'light-estimation', 'anchors']
+      })
+
+      xrSession.value = session
+      isInVR.value = true
+      passthroughEnabled.value = true
+
+      // Fondo transparente para AR
+      scene.background = null
+
+      // Configurar renderer para AR
+      await renderer.xr.setSession(session)
+
+      // Limpiar xrSession cuando termine
+      session.addEventListener('end', () => {
+        xrSession.value = null
+      })
+
+      console.log('✓ Sesión AR móvil iniciada')
+      return session
+    } catch (error) {
+      console.error('Error iniciando sesión AR:', error)
+      throw error
+    }
+  }
+
   return {
     isXRSupported,
+    isARSupported,
     xrSession,
     isInVR,
     passthroughEnabled,
     checkXRSupport,
     startXRSession,
     startXRSessionWithPassthrough,
+    startARSession,
     endXRSession,
     togglePassthrough
   }

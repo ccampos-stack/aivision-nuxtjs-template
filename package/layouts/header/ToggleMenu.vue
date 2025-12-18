@@ -27,10 +27,13 @@ const items: Item[] = [
     title: "Proyectos",
     url: "/projects",
   },
+  // Blog oculto temporalmente - Para editar después
+  /*
   {
     title: "Blog",
     url: "/blog",
   },
+  */
   {
     title: "Contacto",
     url: "/contact",

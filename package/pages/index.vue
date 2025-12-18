@@ -8,6 +8,7 @@
   <HomepageMeetOurTeam/>
   <!-- <HomepagePricing/> -->
   <!-- <HomepageFAQ/> -->
-  <HomepageRecentNews/>
+  <!-- Sección de noticias oculta temporalmente - Para editar después -->
+  <!-- <HomepageRecentNews/> -->
   <HomepageGetinTouch/>
 </template>
